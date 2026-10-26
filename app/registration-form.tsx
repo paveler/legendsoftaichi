@@ -192,7 +192,7 @@ export default function RegistrationForm() {
 
         <p className="error-msg" role="alert">{error}</p>
         <button className="submit" type="submit" disabled={sending}>
-          {sending ? 'Отправляем…' : 'Зарегистрироваться'}
+          {sending ? 'Отправляем…' : 'Перейти к оплате'}
         </button>
       </form>
     </>
