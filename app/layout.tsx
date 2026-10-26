@@ -1,5 +1,6 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond, Manrope, Noto_Serif_SC } from 'next/font/google';
+import { SITE_NAME, SITE_URL } from '@/lib/site';
 import './globals.css';
 
 const cormorant = Cormorant_Garamond({
@@ -19,15 +20,28 @@ const notoSC = Noto_Serif_SC({
   preload: false,
 });
 
+const description =
+  'Фестиваль тайцзицюань «Легенды Тайцзи II» — 19 декабря 2026. Регистрация зрителей и спортсменов: выступления с формами без оружия и с оружием. Организатор — Академия Цигун и Тайцзи Cheng Long.';
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://legendsoftaichi.ru'),
-  title: 'Легенды Тайцзи II — регистрация',
-  description:
-    'Фестиваль «Легенды Тайцзи II» — 19 декабря. Регистрация зрителей и спортсменов. Организатор — Академия Цигун и Тайцзи Cheng Long.',
+  metadataBase: new URL(SITE_URL),
+  title: 'Легенды Тайцзи II — фестиваль тайцзи 19 декабря 2026 | Регистрация',
+  description,
+  keywords: ['фестиваль тайцзи', 'тайцзицюань', 'соревнования по тайцзи', 'Легенды Тайцзи', 'Cheng Long', 'ушу', 'цигун'],
+  alternates: { canonical: '/' },
   openGraph: {
-    title: 'Легенды Тайцзи II',
-    description: 'Фестиваль тайцзи · 19 декабря · Регистрация открыта',
+    type: 'website',
+    locale: 'ru_RU',
+    url: '/',
+    siteName: SITE_NAME,
+    title: 'Легенды Тайцзи II — фестиваль тайцзи, 19 декабря',
+    description: 'Регистрация зрителей и спортсменов открыта',
   },
+  robots: { index: true, follow: true },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#f4efe4',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -1,8 +1,29 @@
+import { EVENT_DATE, ORGANIZER, SITE_NAME, SITE_URL } from '@/lib/site';
 import RegistrationForm from './registration-form';
+
+// Разметка события для поисковиков. TODO: добавить location (место проведения) —
+// без него Google не покажет расширенный сниппет события
+const eventJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SportsEvent',
+  name: SITE_NAME,
+  description: 'Фестиваль тайцзицюань: выступления спортсменов с формами без оружия и с оружием.',
+  startDate: EVENT_DATE,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  image: `${SITE_URL}/opengraph-image`,
+  url: SITE_URL,
+  inLanguage: 'ru',
+  organizer: { '@type': 'Organization', name: ORGANIZER.name, url: ORGANIZER.url },
+};
 
 export default function Home() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
+      />
       <header className="hero">
         <svg className="enso" viewBox="0 0 200 200" aria-hidden="true">
           <path
@@ -14,7 +35,7 @@ export default function Home() {
         <div className="hero-inner">
           <p className="eyebrow">Фестиваль тайцзи</p>
           <h1>Легенды Тайцзи<span className="num">II</span></h1>
-          <p className="date">19 декабря</p>
+          <p className="date"><time dateTime={EVENT_DATE}>19 декабря</time></p>
           <div><span className="seal" aria-hidden="true">成龍</span></div>
           <a className="cta" href="#reg">Регистрация</a>
         </div>
