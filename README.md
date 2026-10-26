@@ -24,4 +24,5 @@ npm run dev
 
 ## Деплой
 
-DigitalOcean App Platform, спека в `.do/app.yaml` (деплой на push в `main`).
+Vercel, деплой на push в `main`. В настройках проекта нужна переменная
+`DIRECTUAL_REGISTER_WEBHOOK` (значение — в `.env.example`).

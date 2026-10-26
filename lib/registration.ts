@@ -1,7 +1,8 @@
 // Общая схема заявки: валидируется и на клиенте, и в /api/register
 
-export const MAX_FORMS = 6;
-export const MAX_WEAPON = 3;
+/** Не больше 3 форм каждого типа — итого до 6 */
+export const MAX_PER_TYPE = 3;
+export const MAX_FORMS = MAX_PER_TYPE * 2;
 
 export type Role = 'spectator' | 'athlete';
 export type FormType = 'empty' | 'weapon';
@@ -63,7 +64,8 @@ export function parseRegistration(input: unknown):
       }))
     : [];
   if (forms.length < 1 || forms.length > MAX_FORMS) errors.push('forms');
-  if (forms.filter((f) => f.type === 'weapon').length > MAX_WEAPON) errors.push('forms');
+  if (forms.filter((f) => f.type === 'weapon').length > MAX_PER_TYPE) errors.push('forms');
+  if (forms.filter((f) => f.type === 'empty').length > MAX_PER_TYPE) errors.push('forms');
   forms.forEach((f, i) => { if (!f.description) errors.push(`forms.${i}`); });
 
   if (errors.length) return { ok: false, errors };

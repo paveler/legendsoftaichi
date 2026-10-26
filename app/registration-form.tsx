@@ -2,14 +2,14 @@
 
 import { useRef, useState } from 'react';
 import {
-  MAX_FORMS, MAX_WEAPON, parseRegistration,
+  MAX_FORMS, MAX_PER_TYPE, parseRegistration,
   type FormType, type RegisterResult, type Role,
 } from '@/lib/registration';
 
 interface Slot { id: number; type: FormType; description: string }
 
 let slotSeq = 0;
-const newSlot = (): Slot => ({ id: ++slotSeq, type: 'empty', description: '' });
+const newSlot = (type: FormType = 'empty'): Slot => ({ id: ++slotSeq, type, description: '' });
 
 export default function RegistrationForm() {
   const [role, setRole] = useState<Role>('spectator');
@@ -21,7 +21,9 @@ export default function RegistrationForm() {
   const [done, setDone] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const weaponCount = slots.filter((s) => s.type === 'weapon').length;
+  const count = (type: FormType) => slots.filter((s) => s.type === type).length;
+  // тип недоступен для слота, если лимит по нему уже выбран другими слотами
+  const typeFull = (s: Slot, type: FormType) => s.type !== type && count(type) >= MAX_PER_TYPE;
 
   const clearInvalid = (key: string) =>
     setInvalid((prev) => { if (!prev.has(key)) return prev; const next = new Set(prev); next.delete(key); return next; });
@@ -145,7 +147,7 @@ export default function RegistrationForm() {
 
             <div className="field">
               <span className="label">Выступления <span className="req">*</span></span>
-              <p className="forms-hint">От 1 до {MAX_FORMS} форм, из них с оружием — не более {MAX_WEAPON}.</p>
+              <p className="forms-hint">До {MAX_PER_TYPE} форм без оружия и до {MAX_PER_TYPE} с оружием.</p>
             </div>
             <div className="slots">
               {slots.map((s) => (
@@ -153,10 +155,11 @@ export default function RegistrationForm() {
                   <div className="slot-top">
                     <div className="seg">
                       <input type="radio" id={`t-${s.id}-e`} name={`type-${s.id}`} checked={s.type === 'empty'}
+                        disabled={typeFull(s, 'empty')}
                         onChange={() => updateSlot(s.id, { type: 'empty' })} />
                       <label htmlFor={`t-${s.id}-e`}>Без оружия</label>
                       <input type="radio" id={`t-${s.id}-w`} name={`type-${s.id}`} checked={s.type === 'weapon'}
-                        disabled={s.type !== 'weapon' && weaponCount >= MAX_WEAPON}
+                        disabled={typeFull(s, 'weapon')}
                         onChange={() => updateSlot(s.id, { type: 'weapon' })} />
                       <label htmlFor={`t-${s.id}-w`}>С оружием</label>
                     </div>
@@ -174,7 +177,10 @@ export default function RegistrationForm() {
               ))}
             </div>
             {slots.length < MAX_FORMS && (
-              <button type="button" className="add" onClick={() => setSlots((all) => [...all, newSlot()])}>
+              <button type="button" className="add" onClick={() => setSlots((all) => [
+                  ...all,
+                  newSlot(all.filter((s) => s.type === 'empty').length < MAX_PER_TYPE ? 'empty' : 'weapon'),
+                ])}>
                 + Добавить форму
               </button>
             )}
