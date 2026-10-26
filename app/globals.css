@@ -133,6 +133,21 @@ h2 {
   content: ""; width: 56px; height: 1px; background: var(--line);
 }
 
+/* ---------- venue ---------- */
+.venue { text-align: center; border-bottom: 1px solid var(--line); }
+.venue address { font-style: normal; margin: 28px 0 0; }
+.venue address p { margin: 0; font-size: 18px; }
+.venue .venue-name { font: 500 28px/1.2 var(--serif); margin-bottom: 8px; }
+.venue .venue-note { font-size: 15px; color: var(--ink-soft); margin-top: 4px; }
+.venue-metro { margin: 24px 0 0; color: var(--ink-soft); font-size: 15px; }
+.metro {
+  display: inline-grid; place-items: center;
+  width: 22px; height: 22px; margin-right: 6px;
+  border-radius: 50%; background: var(--red); color: var(--paper);
+  font: 600 12px/1 var(--sans); vertical-align: 1px;
+}
+.venue .cta { margin-top: 32px; }
+
 /* ---------- form ---------- */
 form { display: grid; gap: 28px; }
 .field { display: grid; gap: 8px; }

@@ -60,7 +60,7 @@ export default async function OpengraphImage() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginTop: 30 }}>
             <div style={{ width: 56, height: 1, background: INK, opacity: 0.4 }} />
-            <div style={{ fontFamily: 'Cormorant', fontSize: 38, letterSpacing: 3 }}>19 декабря</div>
+            <div style={{ fontFamily: 'Cormorant', fontSize: 38, letterSpacing: 3 }}>19 декабря · Москва</div>
             <div style={{ width: 56, height: 1, background: INK, opacity: 0.4 }} />
           </div>
           <div

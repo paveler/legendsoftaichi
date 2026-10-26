@@ -1,8 +1,7 @@
-import { EVENT_DATE, ORGANIZER, SITE_NAME, SITE_URL } from '@/lib/site';
+import { EVENT_DATE, ORGANIZER, SITE_NAME, SITE_URL, VENUE } from '@/lib/site';
 import RegistrationForm from './registration-form';
 
-// Разметка события для поисковиков. TODO: добавить location (место проведения) —
-// без него Google не покажет расширенный сниппет события
+// Разметка события для поисковиков
 const eventJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SportsEvent',
@@ -14,6 +13,16 @@ const eventJsonLd = {
   image: `${SITE_URL}/opengraph-image`,
   url: SITE_URL,
   inLanguage: 'ru',
+  location: {
+    '@type': 'Place',
+    name: VENUE.name,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: `${VENUE.street}, ${VENUE.details}`,
+      addressLocality: VENUE.city,
+      addressCountry: 'RU',
+    },
+  },
   organizer: { '@type': 'Organization', name: ORGANIZER.name, url: ORGANIZER.url },
 };
 
@@ -35,11 +44,27 @@ export default function Home() {
         <div className="hero-inner">
           <p className="eyebrow">Фестиваль тайцзи</p>
           <h1>Легенды Тайцзи<span className="num">II</span></h1>
-          <p className="date"><time dateTime={EVENT_DATE}>19 декабря</time></p>
+          <p className="date"><time dateTime={EVENT_DATE}>19 декабря</time> · {VENUE.city}</p>
           <div><span className="seal" aria-hidden="true">成龍</span></div>
           <a className="cta" href="#reg">Регистрация</a>
         </div>
       </header>
+
+      <section className="block venue" id="venue">
+        <div className="wrap">
+          <div className="divider" aria-hidden="true">地</div>
+          <h2>Место проведения</h2>
+          <address>
+            <p className="venue-name">{VENUE.name}</p>
+            <p>{VENUE.city}, {VENUE.street}</p>
+            <p className="venue-note">{VENUE.details}</p>
+          </address>
+          <p className="venue-metro">
+            <span className="metro">М</span> «{VENUE.metro}» — {VENUE.route.toLowerCase()}
+          </p>
+          <a className="cta" href={VENUE.mapUrl} target="_blank" rel="noopener">Открыть на карте</a>
+        </div>
+      </section>
 
       <section className="block" id="reg">
         <div className="wrap">
