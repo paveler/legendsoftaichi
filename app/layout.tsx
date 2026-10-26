@@ -20,6 +20,7 @@ const notoSC = Noto_Serif_SC({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://legendsoftaichi.ru'),
   title: 'Легенды Тайцзи II — регистрация',
   description:
     'Фестиваль «Легенды Тайцзи II» — 19 декабря. Регистрация зрителей и спортсменов. Организатор — Академия Цигун и Тайцзи Cheng Long.',
