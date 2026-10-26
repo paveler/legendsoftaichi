@@ -103,6 +103,18 @@ export default function RegistrationForm() {
             value={fields.fullName} onChange={setField('fullName')} />
         </div>
 
+        <div className="row">
+          <div className="field">
+            <label htmlFor="email">Эл. почта <span className="req">*</span></label>
+            <input id="email" type="email" autoComplete="email" className={cls('email')}
+              value={fields.email} onChange={setField('email')} />
+          </div>
+          <div className="field">
+            <label htmlFor="phone">Телефон</label>
+            <input id="phone" type="tel" autoComplete="tel" value={fields.phone} onChange={setField('phone')} />
+          </div>
+        </div>
+
         <div className="field">
           <span className="label">Как участвуете <span className="req">*</span></span>
           <div className="seg" role="radiogroup">
@@ -127,17 +139,6 @@ export default function RegistrationForm() {
                 <label htmlFor="experience">Стаж занятий <span className="req">*</span></label>
                 <input id="experience" type="text" placeholder="например, 5 лет" className={cls('experience')}
                   value={fields.experience} onChange={setField('experience')} />
-              </div>
-            </div>
-            <div className="row">
-              <div className="field">
-                <label htmlFor="email">Эл. почта <span className="req">*</span></label>
-                <input id="email" type="email" autoComplete="email" className={cls('email')}
-                  value={fields.email} onChange={setField('email')} />
-              </div>
-              <div className="field">
-                <label htmlFor="phone">Телефон</label>
-                <input id="phone" type="tel" autoComplete="tel" value={fields.phone} onChange={setField('phone')} />
               </div>
             </div>
             <div className="field">

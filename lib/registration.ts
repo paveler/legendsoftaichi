@@ -44,15 +44,18 @@ export function parseRegistration(input: unknown):
   const role = raw.role === 'athlete' ? 'athlete' : raw.role === 'spectator' ? 'spectator' : null;
   if (!role) errors.push('role');
 
+  const email = str(raw.email);
+  if (!EMAIL_RE.test(email)) errors.push('email');
+  const phone = str(raw.phone);
+
   if (role !== 'athlete') {
-    return errors.length ? { ok: false, errors } : { ok: true, data: { fullName, role: 'spectator' } };
+    return errors.length
+      ? { ok: false, errors }
+      : { ok: true, data: { fullName, role: 'spectator', email, phone } };
   }
 
   const age = Number(raw.age);
   if (!Number.isInteger(age) || age < 3 || age > 120) errors.push('age');
-
-  const email = str(raw.email);
-  if (!EMAIL_RE.test(email)) errors.push('email');
 
   const experience = str(raw.experience);
   if (!experience) errors.push('experience');
@@ -76,7 +79,7 @@ export function parseRegistration(input: unknown):
       role,
       age,
       email,
-      phone: str(raw.phone),
+      phone,
       school: str(raw.school),
       experience,
       forms,
