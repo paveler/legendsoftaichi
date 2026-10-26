@@ -1,4 +1,11 @@
-import { EVENT_DATE, ORGANIZER, SITE_NAME, SITE_URL, VENUE } from '@/lib/site';
+import Image from 'next/image';
+import { EVENT_DATE, HASHTAGS, ORGANIZER, SITE_NAME, SITE_URL, TELEGRAM_CHAT, VENUE } from '@/lib/site';
+import logo from '@/assets/brand/logo.png';
+import peoniesLeft from '@/assets/brand/peonies-left.png';
+import peoniesRight from '@/assets/brand/peonies-right.png';
+import peonyRed from '@/assets/brand/peony-red.png';
+import peonyRose from '@/assets/brand/peony-rose.png';
+import BrandText from './brand-text';
 import RegistrationForm from './registration-form';
 
 // Разметка события для поисковиков
@@ -10,7 +17,7 @@ const eventJsonLd = {
   startDate: EVENT_DATE,
   eventStatus: 'https://schema.org/EventScheduled',
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-  image: `${SITE_URL}/opengraph-image`,
+  image: `${SITE_URL}/opengraph-image.png`,
   url: SITE_URL,
   inLanguage: 'ru',
   location: {
@@ -34,26 +41,32 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
       />
       <header className="hero">
-        <svg className="enso" viewBox="0 0 200 200" aria-hidden="true">
-          <path
-            d="M100 18c46 0 82 36 82 82s-36 82-82 82-82-36-82-82c0-30 15-55 38-70"
-            fill="none" stroke="#1c1a17" strokeWidth="13" strokeLinecap="round"
-          />
-        </svg>
-        <div className="vertical" aria-hidden="true">太極傳奇</div>
+        {/* Композиция пресс-волла: кусты пионов по краям, всё остальное по центру */}
+        <Image className="peonies peonies-l" src={peoniesLeft} alt="" priority sizes="(max-width: 760px) 64vw, 45vw" />
+        <Image className="peonies peonies-r" src={peoniesRight} alt="" priority sizes="(max-width: 760px) 64vw, 45vw" />
+        <p className="tag tag-l">{HASHTAGS[0]}</p>
+        <p className="tag tag-r">{HASHTAGS[1]}</p>
         <div className="hero-inner">
-          <p className="eyebrow">Фестиваль тайцзи</p>
-          <h1>Легенды Тайцзи<span className="num">II</span></h1>
-          <p className="date"><time dateTime={EVENT_DATE}>19 декабря</time> · {VENUE.city}</p>
-          <div><span className="seal" aria-hidden="true">成龍</span></div>
+          <h1>
+            <img className="title" src="/brand/title.svg" width={4670} height={1100} alt="" />
+            <span className="sr-only">Фестиваль «Легенды Тайцзи» II</span>
+          </h1>
+          <Image className="logo" src={logo} alt={ORGANIZER.name} priority sizes="240px" />
+          <p className="slogan">
+            <img src="/brand/slogan.svg" width={3550} height={500}
+              alt="Пусть расцветают сто цветов, пусть соперничают сто школ" />
+          </p>
+          <img className="badge" src="/brand/badge.svg" width={2262} height={425} alt="百花齐放，百家争鸣" lang="zh" />
+          <p className="date"><time dateTime={EVENT_DATE}>19 декабря 2026</time> · {VENUE.city}</p>
           <a className="cta" href="#reg">Регистрация</a>
         </div>
       </header>
 
       <section className="block venue" id="venue">
+        <Image className="accent accent-r" src={peonyRed} alt="" sizes="(max-width: 760px) 50vw, 440px" />
         <div className="wrap">
-          <div className="divider" aria-hidden="true">地</div>
-          <h2>Место проведения</h2>
+          <h2><BrandText text="Где и когда" /></h2>
+          <p className="venue-date"><time dateTime={EVENT_DATE}>19 декабря 2026</time></p>
           <address>
             <p className="venue-name">{VENUE.name}</p>
             <p>{VENUE.city}, {VENUE.street}</p>
@@ -62,19 +75,24 @@ export default function Home() {
           <p className="venue-metro">
             <span className="metro">М</span> «{VENUE.metro}» — {VENUE.route.toLowerCase()}
           </p>
-          <a className="cta" href={VENUE.mapUrl} target="_blank" rel="noopener">Открыть на карте</a>
+          <a className="cta cta-ghost" href={VENUE.mapUrl} target="_blank" rel="noopener">Открыть на карте</a>
         </div>
       </section>
 
-      <section className="block" id="reg">
+      <section className="block reg" id="reg">
+        <Image className="accent accent-l" src={peonyRose} alt="" sizes="(max-width: 760px) 50vw, 360px" />
         <div className="wrap">
           <RegistrationForm />
         </div>
       </section>
 
       <footer>
-        Организатор —{' '}
-        <a href="https://taijipro.com/" target="_blank" rel="noopener">Академия Цигун и Тайцзи Cheng Long</a>
+        <div className="foot-links">
+          <a href={TELEGRAM_CHAT} target="_blank" rel="noopener">Телеграм-чат<br />Легенд Тайцзи</a>
+          <a href={ORGANIZER.url} target="_blank" rel="noopener">Сайт академии<br /><b>taijipro.com</b></a>
+        </div>
+        <p className="foot-tags">{HASHTAGS.join('  ')}</p>
+        <p>Организатор — {ORGANIZER.name}</p>
       </footer>
     </>
   );

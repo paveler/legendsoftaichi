@@ -10,6 +10,9 @@ Next.js (App Router), бэкенд — Directual.
 - `app/api/register/route.ts` — прокси: валидирует заявку и шлёт в вебхук Directual
 - `lib/registration.ts` — общая схема и валидация заявки (клиент + сервер)
 - `lib/directual.ts` — работа с Directual (только сервер)
+- `assets/brand/`, `public/brand/` — фирменный стиль, вырезан из PDF пресс-волла: пионы, логотип, заголовок, слоган, плашка
+- `lib/brand-glyphs.ts` + `app/brand-text.tsx` — заголовки разделов фирменным шрифтом (в PDF он в кривых,
+  поэтому есть только буквы из заголовка и слогана: нет М, Я, Б, Ж, Х, Э, Щ, цифр)
 
 Вебхук отвечает `{ paymentNeeded, paymentURL }` (в корне или в `result`):
 если оплата нужна — редирект на `paymentURL`, иначе экран «Спасибо».

@@ -1,10 +1,13 @@
 'use client';
 
+import Image from 'next/image';
 import { useRef, useState } from 'react';
+import logo from '@/assets/brand/logo.png';
 import {
   MAX_FORMS, MAX_PER_TYPE, parseRegistration,
   type FormType, type RegisterResult, type Role,
 } from '@/lib/registration';
+import BrandText from './brand-text';
 
 interface Slot { id: number; type: FormType; description: string }
 
@@ -83,8 +86,8 @@ export default function RegistrationForm() {
   if (done) {
     return (
       <div className="done">
-        <span className="seal" aria-hidden="true">謝</span>
-        <h2>Спасибо!</h2>
+        <Image className="done-logo" src={logo} alt="" sizes="140px" />
+        <h2><BrandText text="До встречи" /></h2>
         <p>Регистрация прошла успешно. Ждём вас 19 декабря.</p>
       </div>
     );
@@ -92,8 +95,7 @@ export default function RegistrationForm() {
 
   return (
     <>
-      <div className="divider" aria-hidden="true">道</div>
-      <h2>Регистрация</h2>
+      <h2><BrandText text="Запись на фестиваль" /></h2>
       <p className="lead">Зрителем или участником — заполните форму ниже.</p>
 
       <form ref={formRef} onSubmit={onSubmit} noValidate>

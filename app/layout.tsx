@@ -1,23 +1,13 @@
 import type { Metadata, Viewport } from 'next';
-import { Cormorant_Garamond, Manrope, Noto_Serif_SC } from 'next/font/google';
+import { Rubik } from 'next/font/google';
 import { SITE_NAME, SITE_URL } from '@/lib/site';
 import './globals.css';
 
-const cormorant = Cormorant_Garamond({
+// Ближайший к шрифту хэштегов и подписей на пресс-волле
+const rubik = Rubik({
   subsets: ['latin', 'cyrillic'],
-  weight: ['400', '500', '600'],
-  variable: '--font-cormorant',
-});
-const manrope = Manrope({
-  subsets: ['latin', 'cyrillic'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-manrope',
-});
-// CJK-шрифт огромный — не прелоадим, нужен для пары иероглифов
-const notoSC = Noto_Serif_SC({
-  weight: ['400', '600'],
-  variable: '--font-noto-sc',
-  preload: false,
+  weight: ['400', '500', '700'],
+  variable: '--font-rubik',
 });
 
 const description =
@@ -41,12 +31,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#f4efe4',
+  themeColor: '#ffffff',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`${cormorant.variable} ${manrope.variable} ${notoSC.variable}`}>
+    <html lang="ru" className={rubik.variable}>
       <body>{children}</body>
     </html>
   );
