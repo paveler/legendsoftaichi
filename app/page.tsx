@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { FORM_FEE, SPECTATOR_FEE } from '@/lib/registration';
 import { EVENT_DATE, HASHTAGS, ORGANIZER, SITE_NAME, SITE_URL, TELEGRAM_CHAT, VENUE } from '@/lib/site';
 import logo from '@/assets/brand/logo.png';
 import peoniesLeft from '@/assets/brand/peonies-left.png';
@@ -31,6 +32,16 @@ const eventJsonLd = {
     },
   },
   organizer: { '@type': 'Organization', name: ORGANIZER.name, url: ORGANIZER.url },
+  offers: [
+    { name: 'Участие зрителем', price: SPECTATOR_FEE },
+    { name: 'Участие спортсменом, за одну форму', price: FORM_FEE },
+  ].map((o) => ({
+    '@type': 'Offer',
+    ...o,
+    priceCurrency: 'RUB',
+    url: `${SITE_URL}/#reg`,
+    availability: 'https://schema.org/InStock',
+  })),
 };
 
 export default function Home() {

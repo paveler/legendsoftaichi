@@ -4,8 +4,18 @@
 export const MAX_PER_TYPE = 3;
 export const MAX_FORMS = MAX_PER_TYPE * 2;
 
+/** Взнос, ₽: зритель платит фиксированно, спортсмен — за каждую заявленную форму */
+export const SPECTATOR_FEE = 1000;
+export const FORM_FEE = 1000;
+
 export type Role = 'spectator' | 'athlete';
 export type FormType = 'empty' | 'weapon';
+
+export const feeOf = (role: Role, formsCount: number) =>
+  role === 'athlete' ? formsCount * FORM_FEE : SPECTATOR_FEE;
+
+/** 6000 → «6 000 ₽» (неразрывные пробелы, без Intl — чтобы SSR и браузер совпадали) */
+export const rub = (n: number) => String(n).replace(/\B(?=(\d{3})+$)/g, ' ') + ' ₽';
 
 export interface PerformedForm {
   type: FormType;
@@ -21,6 +31,8 @@ export interface Registration {
   school?: string;
   experience?: string;
   forms?: PerformedForm[];
+  /** Сумма к оплате, ₽ — считается здесь, с клиента не принимается */
+  amount: number;
 }
 
 export interface RegisterResult {
@@ -51,7 +63,7 @@ export function parseRegistration(input: unknown):
   if (role !== 'athlete') {
     return errors.length
       ? { ok: false, errors }
-      : { ok: true, data: { fullName, role: 'spectator', email, phone } };
+      : { ok: true, data: { fullName, role: 'spectator', email, phone, amount: SPECTATOR_FEE } };
   }
 
   const age = Number(raw.age);
@@ -83,6 +95,7 @@ export function parseRegistration(input: unknown):
       school: str(raw.school),
       experience,
       forms,
+      amount: feeOf('athlete', forms.length),
     },
   };
 }

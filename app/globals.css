@@ -246,6 +246,21 @@ input:focus, textarea:focus { border-color: var(--ink); }
 }
 .add:hover { border-style: solid; }
 
+.total {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 16px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  background: var(--blush-soft);
+  border: 2px solid var(--blush);
+}
+.total-sum {
+  grid-column: 2; grid-row: 1 / span 2;
+  font: 700 28px/1 var(--sans);
+  color: var(--red);
+  white-space: nowrap;
+}
+.total-note { font-size: 14px; color: var(--ink-soft); }
+
 .error-msg { color: var(--red); font-size: 14px; margin: 0; min-height: 1em; }
 .submit {
   margin-top: 4px;

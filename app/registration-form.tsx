@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRef, useState } from 'react';
 import logo from '@/assets/brand/logo.png';
 import {
-  MAX_FORMS, MAX_PER_TYPE, parseRegistration,
+  FORM_FEE, MAX_FORMS, MAX_PER_TYPE, SPECTATOR_FEE, feeOf, parseRegistration, rub,
   type FormType, type RegisterResult, type Role,
 } from '@/lib/registration';
 import BrandText from './brand-text';
@@ -13,6 +13,9 @@ interface Slot { id: number; type: FormType; description: string }
 
 let slotSeq = 0;
 const newSlot = (type: FormType = 'empty'): Slot => ({ id: ++slotSeq, type, description: '' });
+
+// форм всегда от 1 до 6
+const formsWord = (n: number) => (n === 1 ? 'форма' : n < 5 ? 'формы' : 'форм');
 
 export default function RegistrationForm() {
   const [role, setRole] = useState<Role>('spectator');
@@ -127,6 +130,9 @@ export default function RegistrationForm() {
               onChange={() => setRole('athlete')} />
             <label htmlFor="r-athlete">Спортсмен</label>
           </div>
+          <p className="forms-hint">
+            Зритель — {rub(SPECTATOR_FEE)}. Спортсмен — {rub(FORM_FEE)} за каждую форму.
+          </p>
         </div>
 
         {role === 'athlete' && (
@@ -189,6 +195,16 @@ export default function RegistrationForm() {
             )}
           </div>
         )}
+
+        <div className="total" aria-live="polite">
+          <span className="label">К оплате</span>
+          <span className="total-sum">{rub(feeOf(role, slots.length))}</span>
+          <span className="total-note">
+            {role === 'athlete'
+              ? `${slots.length} ${formsWord(slots.length)} × ${rub(FORM_FEE)}`
+              : 'Участие зрителем'}
+          </span>
+        </div>
 
         <p className="error-msg" role="alert">{error}</p>
         <button className="submit" type="submit" disabled={sending}>
