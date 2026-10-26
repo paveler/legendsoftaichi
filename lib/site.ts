@@ -11,5 +11,5 @@ export const VENUE = {
   details: 'подъезд 3, этаж 8, вход со стороны трамвайных путей',
   metro: 'Сокол',
   route: 'Выход № 1, далее около 9 минут пешком',
-  mapUrl: 'https://yandex.ru/maps/?text=' + encodeURIComponent('Москва, Волоколамское шоссе, 1с1'),
+  mapUrl: 'https://yandex.ru/maps/-/CXVdJTnY',
 };
