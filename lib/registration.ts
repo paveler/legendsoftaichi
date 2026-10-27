@@ -1,4 +1,5 @@
 // Общая схема заявки: валидируется и на клиенте, и в /api/register
+import { emailError } from './email';
 
 /** Не больше 3 форм каждого типа — итого до 6 */
 export const MAX_PER_TYPE = 3;
@@ -40,7 +41,6 @@ export interface RegisterResult {
   paymentURL?: string;
 }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
 
 /** Возвращает нормализованную заявку или список ошибочных полей. */
@@ -57,7 +57,7 @@ export function parseRegistration(input: unknown):
   if (!role) errors.push('role');
 
   const email = str(raw.email);
-  if (!EMAIL_RE.test(email)) errors.push('email');
+  if (emailError(email)) errors.push('email');
   const phone = str(raw.phone);
 
   if (role !== 'athlete') {

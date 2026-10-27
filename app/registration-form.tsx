@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 import logo from '@/assets/brand/logo.png';
+import { emailError, suggestEmail } from '@/lib/email';
 import {
   FORM_FEE, MAX_FORMS, MAX_PER_TYPE, SPECTATOR_FEE, feeOf, parseRegistration, rub,
   type FormType, type RegisterResult, type Role,
@@ -25,6 +26,9 @@ export default function RegistrationForm() {
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const [emailHint, setEmailHint] = useState<string | null>(null);
+  // адрес, на котором уже останавливали отправку из-за возможной опечатки: второе нажатие — «адрес верный»
+  const warnedEmail = useRef('');
   const formRef = useRef<HTMLFormElement>(null);
 
   const count = (type: FormType) => slots.filter((s) => s.type === type).length;
@@ -44,6 +48,22 @@ export default function RegistrationForm() {
 
   const cls = (key: string) => (invalid.has(key) ? 'invalid' : undefined);
 
+  const emailMsg = invalid.has('email') ? emailError(fields.email) : null;
+
+  // проверяем почту, когда из поля ушли; пустое не ругаем, пока не нажали «Перейти к оплате»
+  const onEmailBlur = () => {
+    if (!fields.email.trim()) return;
+    if (emailError(fields.email)) setInvalid((prev) => new Set(prev).add('email'));
+    setEmailHint(suggestEmail(fields.email));
+  };
+
+  const applyEmailHint = () => {
+    setFields((f) => ({ ...f, email: emailHint ?? f.email }));
+    setEmailHint(null);
+    clearInvalid('email');
+    setError('');
+  };
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
@@ -57,9 +77,21 @@ export default function RegistrationForm() {
     const parsed = parseRegistration(payload);
     if (!parsed.ok) {
       setInvalid(new Set(parsed.errors));
-      setError('Заполните обязательные поля.');
+      setEmailHint(suggestEmail(fields.email));
+      setError('Проверьте поля, отмеченные красным.');
       // фокус на первое ошибочное поле — после ре-рендера с классами .invalid
       requestAnimationFrame(() => formRef.current?.querySelector<HTMLElement>('.invalid')?.focus());
+      return;
+    }
+
+    // похоже на опечатку в домене (gmail.con) — один раз останавливаем и показываем подсказку
+    const email = fields.email.trim();
+    const hint = suggestEmail(email);
+    if (hint && warnedEmail.current !== email) {
+      warnedEmail.current = email;
+      setEmailHint(hint);
+      setError('Проверьте почту — похоже, в ней опечатка. Если адрес верный, нажмите ещё раз.');
+      requestAnimationFrame(() => document.getElementById('email')?.focus());
       return;
     }
 
@@ -111,8 +143,16 @@ export default function RegistrationForm() {
         <div className="row">
           <div className="field">
             <label htmlFor="email">Эл. почта <span className="req">*</span></label>
-            <input id="email" type="email" autoComplete="email" className={cls('email')}
-              value={fields.email} onChange={setField('email')} />
+            <input id="email" type="email" autoComplete="email" spellCheck={false} className={cls('email')}
+              aria-describedby={emailMsg ? 'email-msg' : undefined}
+              value={fields.email} onBlur={onEmailBlur}
+              onChange={(e) => { setField('email')(e); setEmailHint(null); }} />
+            {emailMsg && <p className="field-msg" id="email-msg">{emailMsg}</p>}
+            {emailHint && (
+              <p className="field-hint">
+                Может быть, <button type="button" onClick={applyEmailHint}>{emailHint}</button>?
+              </p>
+            )}
           </div>
           <div className="field">
             <label htmlFor="phone">Телефон</label>
