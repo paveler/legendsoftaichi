@@ -23,7 +23,7 @@ Next.js (App Router), бэкенд — Directual.
 ## Запуск
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env.local  # и подставить URL вебхука
 npm install
 npm run dev
 ```
@@ -31,4 +31,4 @@ npm run dev
 ## Деплой
 
 Vercel, деплой на push в `main`. В настройках проекта нужна переменная
-`DIRECTUAL_REGISTER_WEBHOOK` (значение — в `.env.example`).
+`DIRECTUAL_REGISTER_WEBHOOK` (URL вебхука — в Directual, в репозиторий не коммитится).
