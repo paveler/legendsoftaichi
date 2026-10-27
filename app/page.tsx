@@ -8,6 +8,7 @@ import peonyRed from '@/assets/brand/peony-red.png';
 import peonyRose from '@/assets/brand/peony-rose.png';
 import BrandText from './brand-text';
 import RegistrationForm from './registration-form';
+import VenueInfo from './venue-info';
 
 // Разметка события для поисковиков
 const eventJsonLd = {
@@ -77,16 +78,7 @@ export default function Home() {
         <Image className="accent accent-r" src={peonyRed} alt="" sizes="(max-width: 760px) 50vw, 440px" />
         <div className="wrap">
           <h2><BrandText text="Где и когда" /></h2>
-          <p className="venue-date"><time dateTime={EVENT_DATE}>19 декабря 2026</time></p>
-          <address>
-            <p className="venue-name">{VENUE.name}</p>
-            <p>{VENUE.city}, {VENUE.street}</p>
-            <p className="venue-note">{VENUE.details}</p>
-          </address>
-          <p className="venue-metro">
-            <span className="metro">М</span> «{VENUE.metro}» — {VENUE.route.toLowerCase()}
-          </p>
-          <a className="cta cta-ghost" href={VENUE.mapUrl} target="_blank" rel="noopener">Открыть на карте</a>
+          <VenueInfo />
         </div>
       </section>
 

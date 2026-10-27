@@ -7,6 +7,8 @@ Next.js (App Router), бэкенд — Directual.
 
 - `app/page.tsx` — лендинг, пререндерится статически
 - `app/registration-form.tsx` — форма регистрации (клиентский компонент)
+- `app/success/page.tsx` — «Оплата прошла»: сюда платёжка возвращает после успешной оплаты (`noindex`)
+- `app/venue-info.tsx` — дата, адрес и как добраться — общий блок для лендинга и `/success`
 - `app/api/register/route.ts` — прокси: валидирует заявку и шлёт в вебхук Directual
 - `lib/registration.ts` — общая схема и валидация заявки (клиент + сервер)
 - `lib/directual.ts` — работа с Directual (только сервер)
@@ -19,6 +21,7 @@ Next.js (App Router), бэкенд — Directual.
 
 Вебхук отвечает `{ paymentNeeded, paymentURL }` (в корне или в `result`):
 если оплата нужна — редирект на `paymentURL`, иначе экран «Спасибо».
+URL возврата после успешной оплаты (настраивается в Directual / платёжке): `https://legendsoftaichi.ru/success`.
 
 ## Запуск
 
