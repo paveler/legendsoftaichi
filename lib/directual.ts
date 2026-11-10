@@ -1,8 +1,9 @@
 import 'server-only';
 import type { RegisterResult, Registration } from './registration';
+import type { Sponsorship } from './sponsorship';
 
-/** Шлёт заявку в вебхук Directual и приводит ответ к { paymentNeeded, paymentURL }. */
-export async function submitRegistration(data: Registration): Promise<RegisterResult> {
+/** Шлёт заявку (участник, зритель или спонсор) в вебхук Directual и приводит ответ к { paymentNeeded, paymentURL }. */
+export async function submitRegistration(data: Registration | Sponsorship): Promise<RegisterResult> {
   const url = process.env.DIRECTUAL_REGISTER_WEBHOOK;
   if (!url) throw new Error('DIRECTUAL_REGISTER_WEBHOOK is not set');
 

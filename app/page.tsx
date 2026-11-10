@@ -70,7 +70,10 @@ export default function Home() {
           </p>
           <img className="badge" src="/brand/badge.svg" width={2262} height={425} alt="百花齐放，百家争鸣" lang="zh" />
           <p className="date"><time dateTime={EVENT_DATE}>19 декабря 2026</time> · {VENUE.city}</p>
-          <a className="cta" href="#reg">Регистрация</a>
+          <div className="hero-ctas">
+            <a className="cta" href="#reg">Регистрация</a>
+            <a className="cta cta-ghost" href="/sponsor">Стать спонсором фестиваля</a>
+          </div>
         </div>
       </header>
 
@@ -93,9 +96,11 @@ export default function Home() {
         <div className="foot-links">
           <a href={TELEGRAM_CHAT} target="_blank" rel="noopener">Телеграм-чат<br />Легенд Тайцзи</a>
           <a href={ORGANIZER.url} target="_blank" rel="noopener">Сайт академии<br /><b>taijipro.com</b></a>
+          <a href="/sponsor">Стать спонсором<br />фестиваля</a>
         </div>
         <p className="foot-tags">{HASHTAGS.join('  ')}</p>
         <p>Организатор — {ORGANIZER.name}</p>
+        <p className="foot-admin"><a href="/admin/login" rel="nofollow">Вход для организаторов</a></p>
       </footer>
     </>
   );

@@ -323,6 +323,30 @@ input:focus, textarea:focus { border-color: var(--ink); }
 .pay-home { margin-top: 20px; font-size: 14px; color: var(--ink-soft); }
 .pay-home:hover { color: var(--red); }
 
+/* ---------- спонсорство (/sponsor) ---------- */
+.pay-kicker.no-check::before { content: none; }
+.sponsor-card { background: #fff; text-align: left; padding: 28px 24px 28px; }
+.sponsor-form { gap: 22px; }
+.amount-input { position: relative; }
+.amount-input input { padding-right: 40px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.amount-input span { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--ink-soft); pointer-events: none; }
+.presets { display: flex; flex-wrap: wrap; gap: 8px; }
+.presets button {
+  padding: 7px 14px;
+  border: 2px solid var(--blush);
+  border-radius: 999px;
+  background: #fff;
+  font: 500 14px var(--sans);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color .15s, background .15s, color .15s;
+}
+.presets button:hover { border-color: var(--rose); }
+.presets button.active { border-color: var(--red); background: var(--red); color: #fff; }
+
+.hero-ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 16px; margin-top: clamp(18px, 3svh, 28px); }
+.hero-ctas .cta { margin-top: 0; }
+
 /* ---------- footer ---------- */
 footer {
   border-top: 2px solid var(--blush);
@@ -342,4 +366,7 @@ footer p { margin: 0; }
 }
 .foot-links a b { color: var(--red); font-size: 18px; letter-spacing: .04em; }
 .foot-links a:hover { color: var(--red); }
+.foot-admin { margin-top: 20px !important; font-size: 12px; }
+.foot-admin a { color: inherit; text-underline-offset: 2px; }
+.foot-admin a:hover { color: var(--red); }
 .foot-tags { font-weight: 700; color: var(--ink); letter-spacing: .04em; margin-bottom: 8px !important; word-spacing: .6em; }
