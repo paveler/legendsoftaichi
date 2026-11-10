@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 import { rub, type RegisterResult } from '@/lib/registration';
-import { SPONSOR_DEFAULT, SPONSOR_MIN, SPONSOR_PRESETS, amountError, parseAmount, parseSponsorship } from '@/lib/sponsorship';
+import { SPONSOR_DEFAULT, SPONSOR_MIN, SPONSOR_PRESETS, amountError, parseAmount, parseSponsorship, phoneError } from '@/lib/sponsorship';
 
 /** 50000 → «50 000» для поля ввода (без ₽) */
 const group = (n: number) => String(n).replace(/\B(?=(\d{3})+$)/g, ' ');
 
 export default function SponsorForm() {
   const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
   const [amountText, setAmountText] = useState(group(SPONSOR_DEFAULT));
   const [invalid, setInvalid] = useState<Set<string>>(new Set());
   const [error, setError] = useState('');
@@ -16,6 +17,7 @@ export default function SponsorForm() {
   const [done, setDone] = useState(false);
 
   const amount = parseAmount(amountText);
+  const phoneMsg = invalid.has('phone') ? phoneError(phone) : null;
   const amountMsg = invalid.has('amount') ? amountError(amount) : null;
 
   const clear = (key: string) => setInvalid((prev) => {
@@ -32,7 +34,7 @@ export default function SponsorForm() {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError('');
-    const parsed = parseSponsorship({ fullName, amount });
+    const parsed = parseSponsorship({ fullName, phone, amount });
     if (!parsed.ok) {
       setInvalid(new Set(parsed.errors));
       setError('Проверьте поля, отмеченные красным.');
@@ -73,6 +75,15 @@ export default function SponsorForm() {
         <label htmlFor="fullName">Имя или название компании <span className="req">*</span></label>
         <input id="fullName" type="text" autoComplete="name" className={invalid.has('fullName') ? 'invalid' : undefined}
           value={fullName} onChange={(e) => { setFullName(e.target.value); clear('fullName'); }} />
+      </div>
+
+      <div className="field">
+        <label htmlFor="phone">Телефон <span className="req">*</span></label>
+        <input id="phone" type="tel" autoComplete="tel" placeholder="+7 900 000-00-00"
+          className={invalid.has('phone') ? 'invalid' : undefined} aria-describedby="phone-msg"
+          value={phone} onChange={(e) => { setPhone(e.target.value); clear('phone'); }}
+          onBlur={() => { if (phone.trim() && phoneError(phone)) setInvalid((prev) => new Set(prev).add('phone')); }} />
+        {phoneMsg && <p id="phone-msg" className="field-msg">{phoneMsg}</p>}
       </div>
 
       <div className="field">

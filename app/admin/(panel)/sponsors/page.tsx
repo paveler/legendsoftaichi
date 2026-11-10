@@ -1,5 +1,6 @@
 import { rub } from '@/lib/registration';
 import { getSponsors, type Sponsor } from '@/lib/sponsors';
+import Contacts from '../contacts';
 import AdminPage, { AdminEmpty, AdminError } from '../admin-page';
 import { ADMIN_NAV } from '../nav';
 
@@ -36,6 +37,7 @@ export default async function Page() {
                 <tr>
                   <th className="num">#</th>
                   <th>Спонсор</th>
+                  <th>Телефон</th>
                   <th>Заказ</th>
                   <th className="r">Сумма</th>
                 </tr>
@@ -45,6 +47,7 @@ export default async function Page() {
                   <tr key={s.id}>
                     <td className="num">{i + 1}</td>
                     <td><b>{s.fullName}</b></td>
+                    <td>{s.phone ? <Contacts p={s} /> : <span className="muted">—</span>}</td>
                     <td>{s.orderNum ? `№ ${s.orderNum}` : <span className="muted">—</span>}</td>
                     <td className="r"><b>{rub(s.sum)}</b></td>
                   </tr>
@@ -53,7 +56,7 @@ export default async function Page() {
               <tfoot>
                 <tr>
                   <td />
-                  <td colSpan={2}>Итого</td>
+                  <td colSpan={3}>Итого</td>
                   <td className="r"><b>{rub(total)}</b></td>
                 </tr>
               </tfoot>

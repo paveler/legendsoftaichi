@@ -18,7 +18,7 @@ export default function Sponsor() {
       <h1><BrandText text="Спонсорство" /></h1>
       <p className="pay-lead">
         Поддержите «{SITE_NAME}» — фестиваль, где встречаются школы и&nbsp;мастера тайцзи.
-        Укажите имя и&nbsp;сумму, дальше — оплата картой.
+        Укажите имя, телефон и&nbsp;сумму, дальше — оплата картой.
       </p>
       <div className="pay-card sponsor-card">
         <SponsorForm />

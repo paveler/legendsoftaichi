@@ -14,6 +14,7 @@ interface SponsorRow {
 export interface Sponsor {
   id: string;
   fullName: string;
+  phone: string;
   orderNum: string;
   sum: number;
 }
@@ -24,6 +25,7 @@ function toSponsor(row: SponsorRow): Sponsor {
   return {
     id: row.id,
     fullName: s.fullName?.trim() || '—',
+    phone: s.phone?.trim() ?? '',
     orderNum: row.order_num ?? '',
     sum: Number(row.sum ?? s.amount) || 0,
   };
