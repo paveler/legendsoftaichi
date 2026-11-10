@@ -4,7 +4,7 @@ import Contacts from '../contacts';
 import AdminPage, { AdminEmpty, AdminError } from '../admin-page';
 import { ADMIN_NAV } from '../nav';
 
-const { title, hint } = ADMIN_NAV[3];
+const { title, hint } = ADMIN_NAV[2];
 
 export default async function Page() {
   let sponsors: Sponsor[];
