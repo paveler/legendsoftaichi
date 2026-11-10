@@ -72,7 +72,7 @@ export default function Home() {
           <p className="date"><time dateTime={EVENT_DATE}>19 декабря 2026</time> · {VENUE.city}</p>
           <div className="hero-ctas">
             <a className="cta" href="#reg">Регистрация</a>
-            <a className="cta cta-ghost" href="/sponsor">Стать спонсором фестиваля</a>
+            <a className="cta cta-ghost" href="/sponsor">Стать спонсором<span className="hide-sm"> фестиваля</span></a>
           </div>
         </div>
       </header>

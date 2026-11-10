@@ -345,7 +345,13 @@ input:focus, textarea:focus { border-color: var(--ink); }
 .presets button.active { border-color: var(--red); background: var(--red); color: #fff; }
 
 .hero-ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 16px; margin-top: clamp(18px, 3svh, 28px); }
-.hero-ctas .cta { margin-top: 0; }
+.hero-ctas .cta { margin-top: 0; white-space: nowrap; }
+/* на телефоне — столбиком, одной ширины, без «фестиваля» в кнопке спонсора */
+@media (max-width: 560px) {
+  .hero-ctas { flex-direction: column; align-items: center; gap: 12px; }
+  .hero-ctas .cta { width: 260px; padding-left: 16px; padding-right: 16px; text-align: center; }
+  .hide-sm { display: none; }
+}
 
 /* ---------- footer ---------- */
 footer {
