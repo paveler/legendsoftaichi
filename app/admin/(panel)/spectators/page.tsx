@@ -7,7 +7,7 @@ import RemovableRow from '../removable-row';
 import { LiveCount, RemovalProvider } from '../removal';
 import PaidFilter, { PaidBadge, paidToBool, parsePaid } from '../paid-filter';
 
-const { title, hint } = ADMIN_NAV[1];
+const { title, hint } = ADMIN_NAV[2];
 
 type Props = { searchParams: Promise<{ paid?: string | string[] }> };
 

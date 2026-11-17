@@ -5,23 +5,30 @@ import { useRef, useState } from 'react';
 import logo from '@/assets/brand/logo.png';
 import { emailError, suggestEmail } from '@/lib/email';
 import {
-  FORM_FEE, MAX_FORMS, MAX_PER_TYPE, SPECTATOR_FEE, feeOf, parseRegistration, rub,
+  FORM_FEE, MAX_FORMS, MAX_MEMBERS, MAX_PER_TYPE, SPECTATOR_FEE, feeOf, parseRegistration, rub,
   type FormType, type RegisterResult, type Role,
 } from '@/lib/registration';
+import { plural } from '@/lib/plural';
 import BrandText from './brand-text';
 
 interface Slot { id: number; type: FormType; description: string }
 
+interface Member { id: number; fullName: string; age: string }
+
 let slotSeq = 0;
 const newSlot = (type: FormType = 'empty'): Slot => ({ id: ++slotSeq, type, description: '' });
+let memberSeq = 0;
+const newMember = (): Member => ({ id: ++memberSeq, fullName: '', age: '' });
 
 // форм всегда от 1 до 6
 const formsWord = (n: number) => (n === 1 ? 'форма' : n < 5 ? 'формы' : 'форм');
+const membersWord = (n: number) => plural(n, 'участник', 'участника', 'участников');
 
 export default function RegistrationForm() {
   const [role, setRole] = useState<Role>('spectator');
   const [fields, setFields] = useState({ fullName: '', age: '', email: '', phone: '', school: '', experience: '' });
   const [slots, setSlots] = useState<Slot[]>(() => [newSlot()]);
+  const [members, setMembers] = useState<Member[]>(() => [newMember()]);
   const [invalid, setInvalid] = useState<Set<string>>(new Set());
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
@@ -45,6 +52,9 @@ export default function RegistrationForm() {
 
   const updateSlot = (id: number, patch: Partial<Slot>) =>
     setSlots((all) => all.map((s) => (s.id === id ? { ...s, ...patch } : s)));
+
+  const updateMember = (id: number, patch: Partial<Member>) =>
+    setMembers((all) => all.map((m) => (m.id === id ? { ...m, ...patch } : m)));
 
   const cls = (key: string) => (invalid.has(key) ? 'invalid' : undefined);
 
@@ -73,6 +83,9 @@ export default function RegistrationForm() {
       role,
       age: fields.age === '' ? undefined : Number(fields.age),
       forms: slots.map(({ type, description }) => ({ type, description })),
+      members: role === 'group'
+        ? members.map((m) => ({ fullName: m.fullName, age: m.age === '' ? undefined : Number(m.age) }))
+        : undefined,
     };
     const parsed = parseRegistration(payload);
     if (!parsed.ok) {
@@ -118,6 +131,50 @@ export default function RegistrationForm() {
     }
   }
 
+  const formsBlock = (
+    <>
+      <div className="field">
+        <span className="label">Выступления <span className="req">*</span></span>
+        <p className="forms-hint">До {MAX_PER_TYPE} форм без оружия и до {MAX_PER_TYPE} с оружием.</p>
+      </div>
+      <div className="slots">
+        {slots.map((s) => (
+          <div className="slot" key={s.id}>
+            <div className="slot-top">
+              <div className="seg">
+                <input type="radio" id={`t-${s.id}-e`} name={`type-${s.id}`} checked={s.type === 'empty'}
+                  disabled={typeFull(s, 'empty')}
+                  onChange={() => updateSlot(s.id, { type: 'empty' })} />
+                <label htmlFor={`t-${s.id}-e`}>Без оружия</label>
+                <input type="radio" id={`t-${s.id}-w`} name={`type-${s.id}`} checked={s.type === 'weapon'}
+                  disabled={typeFull(s, 'weapon')}
+                  onChange={() => updateSlot(s.id, { type: 'weapon' })} />
+                <label htmlFor={`t-${s.id}-w`}>С оружием</label>
+              </div>
+              {slots.length > 1 && (
+                <button type="button" className="remove" aria-label="Удалить форму"
+                  onClick={() => { setSlots((all) => all.filter((x) => x.id !== s.id)); setInvalid(new Set()); }}>
+                  ×
+                </button>
+              )}
+            </div>
+            <textarea rows={2} placeholder="Название и описание формы *"
+              className={cls(`forms.${slots.indexOf(s)}`)} value={s.description}
+              onChange={(e) => { updateSlot(s.id, { description: e.target.value }); clearInvalid(`forms.${slots.indexOf(s)}`); }} />
+          </div>
+        ))}
+      </div>
+      {slots.length < MAX_FORMS && (
+        <button type="button" className="add" onClick={() => setSlots((all) => [
+            ...all,
+            newSlot(all.filter((s) => s.type === 'empty').length < MAX_PER_TYPE ? 'empty' : 'weapon'),
+          ])}>
+          + Добавить форму
+        </button>
+      )}
+    </>
+  );
+
   if (done) {
     return (
       <div className="done">
@@ -131,11 +188,30 @@ export default function RegistrationForm() {
   return (
     <>
       <h2><BrandText text="Запись на фестиваль" /></h2>
-      <p className="lead">Зрителем или участником — заполните форму ниже.</p>
+      <p className="lead">Зрителем, участником или группой — заполните форму ниже.</p>
 
       <form ref={formRef} onSubmit={onSubmit} noValidate>
         <div className="field">
-          <label htmlFor="fullName">Имя и фамилия <span className="req">*</span></label>
+          <span className="label">Как участвуете <span className="req">*</span></span>
+          <div className="seg seg-3" role="radiogroup">
+            <input type="radio" id="r-spectator" name="role" checked={role === 'spectator'}
+              onChange={() => setRole('spectator')} />
+            <label htmlFor="r-spectator">Зритель</label>
+            <input type="radio" id="r-athlete" name="role" checked={role === 'athlete'}
+              onChange={() => setRole('athlete')} />
+            <label htmlFor="r-athlete">Спортсмен</label>
+            <input type="radio" id="r-group" name="role" checked={role === 'group'}
+              onChange={() => setRole('group')} />
+            <label htmlFor="r-group">Группа</label>
+          </div>
+          <p className="forms-hint">
+            Зритель — {rub(SPECTATOR_FEE)}. Спортсмен — {rub(FORM_FEE)} за каждую форму.
+            Группа — {rub(FORM_FEE)} за каждую форму каждого участника, руководитель не платит.
+          </p>
+        </div>
+
+        <div className="field">
+          <label htmlFor="fullName">{role === 'group' ? 'Имя и фамилия руководителя' : 'Имя и фамилия'} <span className="req">*</span></label>
           <input id="fullName" type="text" autoComplete="name" className={cls('fullName')}
             value={fields.fullName} onChange={setField('fullName')} />
         </div>
@@ -160,21 +236,6 @@ export default function RegistrationForm() {
           </div>
         </div>
 
-        <div className="field">
-          <span className="label">Как участвуете <span className="req">*</span></span>
-          <div className="seg" role="radiogroup">
-            <input type="radio" id="r-spectator" name="role" checked={role === 'spectator'}
-              onChange={() => setRole('spectator')} />
-            <label htmlFor="r-spectator">Зритель</label>
-            <input type="radio" id="r-athlete" name="role" checked={role === 'athlete'}
-              onChange={() => setRole('athlete')} />
-            <label htmlFor="r-athlete">Спортсмен</label>
-          </div>
-          <p className="forms-hint">
-            Зритель — {rub(SPECTATOR_FEE)}. Спортсмен — {rub(FORM_FEE)} за каждую форму.
-          </p>
-        </div>
-
         {role === 'athlete' && (
           <div className="athlete">
             <div className="row">
@@ -194,43 +255,47 @@ export default function RegistrationForm() {
               <input id="school" type="text" value={fields.school} onChange={setField('school')} />
             </div>
 
+            {formsBlock}
+          </div>
+        )}
+
+        {role === 'group' && (
+          <div className="athlete">
             <div className="field">
-              <span className="label">Выступления <span className="req">*</span></span>
-              <p className="forms-hint">До {MAX_PER_TYPE} форм без оружия и до {MAX_PER_TYPE} с оружием.</p>
+              <label htmlFor="school">Школа <span className="req">*</span></label>
+              <input id="school" type="text" className={cls('school')}
+                value={fields.school} onChange={setField('school')} />
             </div>
-            <div className="slots">
-              {slots.map((s) => (
-                <div className="slot" key={s.id}>
-                  <div className="slot-top">
-                    <div className="seg">
-                      <input type="radio" id={`t-${s.id}-e`} name={`type-${s.id}`} checked={s.type === 'empty'}
-                        disabled={typeFull(s, 'empty')}
-                        onChange={() => updateSlot(s.id, { type: 'empty' })} />
-                      <label htmlFor={`t-${s.id}-e`}>Без оружия</label>
-                      <input type="radio" id={`t-${s.id}-w`} name={`type-${s.id}`} checked={s.type === 'weapon'}
-                        disabled={typeFull(s, 'weapon')}
-                        onChange={() => updateSlot(s.id, { type: 'weapon' })} />
-                      <label htmlFor={`t-${s.id}-w`}>С оружием</label>
-                    </div>
-                    {slots.length > 1 && (
-                      <button type="button" className="remove" aria-label="Удалить форму"
-                        onClick={() => { setSlots((all) => all.filter((x) => x.id !== s.id)); setInvalid(new Set()); }}>
-                        ×
-                      </button>
-                    )}
-                  </div>
-                  <textarea rows={2} placeholder="Название и описание формы *"
-                    className={cls(`forms.${slots.indexOf(s)}`)} value={s.description}
-                    onChange={(e) => { updateSlot(s.id, { description: e.target.value }); clearInvalid(`forms.${slots.indexOf(s)}`); }} />
+
+            {formsBlock}
+
+            <div className="field">
+              <span className="label">Участники группы <span className="req">*</span></span>
+              <p className="forms-hint">Все, кто выступает. Руководителя сюда не включайте.</p>
+            </div>
+            <div className="members">
+              {members.map((m, i) => (
+                <div className="member" key={m.id}>
+                  <span className="member-num">{i + 1}</span>
+                  <input type="text" placeholder="Имя и фамилия *" aria-label={`Участник ${i + 1}: имя и фамилия`}
+                    className={cls(`members.${i}.fullName`)} value={m.fullName}
+                    onChange={(e) => { updateMember(m.id, { fullName: e.target.value }); clearInvalid(`members.${i}.fullName`); }} />
+                  <input type="number" min={3} max={120} inputMode="numeric" placeholder="Возраст *"
+                    aria-label={`Участник ${i + 1}: возраст`}
+                    className={cls(`members.${i}.age`)} value={m.age}
+                    onChange={(e) => { updateMember(m.id, { age: e.target.value }); clearInvalid(`members.${i}.age`); }} />
+                  {members.length > 1 ? (
+                    <button type="button" className="remove" aria-label="Удалить участника"
+                      onClick={() => { setMembers((all) => all.filter((x) => x.id !== m.id)); setInvalid(new Set()); }}>
+                      ×
+                    </button>
+                  ) : <span />}
                 </div>
               ))}
             </div>
-            {slots.length < MAX_FORMS && (
-              <button type="button" className="add" onClick={() => setSlots((all) => [
-                  ...all,
-                  newSlot(all.filter((s) => s.type === 'empty').length < MAX_PER_TYPE ? 'empty' : 'weapon'),
-                ])}>
-                + Добавить форму
+            {members.length < MAX_MEMBERS && (
+              <button type="button" className="add" onClick={() => setMembers((all) => [...all, newMember()])}>
+                + Добавить участника
               </button>
             )}
           </div>
@@ -238,10 +303,12 @@ export default function RegistrationForm() {
 
         <div className="total" aria-live="polite">
           <span className="label">К оплате</span>
-          <span className="total-sum">{rub(feeOf(role, slots.length))}</span>
+          <span className="total-sum">{rub(feeOf(role, slots.length, members.length))}</span>
           <span className="total-note">
             {role === 'athlete'
               ? `${slots.length} ${formsWord(slots.length)} × ${rub(FORM_FEE)}`
+              : role === 'group'
+              ? `${slots.length} ${formsWord(slots.length)} × ${members.length} ${membersWord(members.length)} × ${rub(FORM_FEE)}`
               : 'Участие зрителем'}
           </span>
         </div>

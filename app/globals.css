@@ -376,3 +376,29 @@ footer p { margin: 0; }
 .foot-admin a { color: inherit; text-underline-offset: 2px; }
 .foot-admin a:hover { color: var(--red); }
 .foot-tags { font-weight: 700; color: var(--ink); letter-spacing: .04em; margin-bottom: 8px !important; word-spacing: .6em; }
+
+/* ---------- группа: третья опция и список участников ---------- */
+.seg.seg-3 { grid-template-columns: repeat(3, 1fr); }
+.members { display: grid; gap: 10px; }
+.member { display: grid; grid-template-columns: 30px 1fr 110px 32px; align-items: center; gap: 10px; }
+.member-num {
+  display: grid; place-items: center;
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--red); color: #fff;
+  font: 700 15px/1 var(--sans);
+}
+@media (max-width: 560px) {
+  .member { grid-template-columns: 30px 1fr 32px; }
+  .member input[type=number] { grid-column: 2; grid-row: 2; }
+}
+
+/* ---------- ожидание подтверждения оплаты (PaymentGate) ---------- */
+.pay-waiting::after {
+  content: '';
+  display: inline-block; vertical-align: -1px;
+  width: 10px; height: 10px; margin-left: 10px;
+  border-radius: 50%; background: var(--red);
+  animation: pay-pulse 1.2s ease-in-out infinite;
+}
+@keyframes pay-pulse { 0%, 100% { opacity: .2; transform: scale(.7); } 50% { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .pay-waiting::after { animation: none; } }

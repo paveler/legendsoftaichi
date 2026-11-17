@@ -27,16 +27,17 @@ function toParticipant(row: ApplicationRow): Participant {
     ...reg,
     id: row.id,
     fullName: reg.fullName || '—',
-    role: reg.role === 'athlete' ? 'athlete' : 'spectator',
+    role: reg.role === 'athlete' || reg.role === 'group' ? reg.role : 'spectator',
     email: reg.email || row.email,
     forms: Array.isArray(reg.forms) ? reg.forms : [],
+    members: Array.isArray(reg.members) ? reg.members : [],
     orderNum: row.order_num ?? '',
     sum: Number(row.sum) || 0,
     isPaid: row.isPaid === true || row.isPaid === 'true',
   };
 }
 
-/** Участники из Directual: type = athlete | spectator, isPaid = true | false; без параметра — все */
+/** Участники из Directual: type = athlete | spectator | group, isPaid = true | false; без параметра — все */
 export async function getParticipants(type?: Role, isPaid?: boolean): Promise<Participant[]> {
   const { payload } = await getData<ApplicationRow>('applications', 'getparticipants', {
     type,
