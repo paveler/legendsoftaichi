@@ -21,3 +21,14 @@ export async function deleteRequest(id: string): Promise<{ ok: boolean }> {
     return { ok: false };
   }
 }
+
+/** Выслать участнику ссылку на оплату неоплаченной заявки по id */
+export async function sendPaymentLink(id: string): Promise<{ ok: boolean }> {
+  try {
+    await sendAction('send_payment_link', { id });
+    return { ok: true };
+  } catch (e) {
+    console.error('[admin/sendPaymentLink]', e);
+    return { ok: false };
+  }
+}
