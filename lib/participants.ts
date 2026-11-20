@@ -37,14 +37,13 @@ function toParticipant(row: ApplicationRow): Participant {
   };
 }
 
-/** Заявки из Directual по роли (athlete | spectator | group), isPaid = true | false; без роли — все.
- *  Роль берём из JSON формы (data.role), а не из поля type в Directual: группы могут прийти
- *  с любым type, поэтому тянем все заявки одним запросом и раскладываем здесь. */
-export async function getParticipants(role?: Role, isPaid?: boolean): Promise<Participant[]> {
+/** Заявки из Directual: type = athlete | spectator | group (обязателен — без него эндпоинт
+ *  ничего не отдаёт), isPaid = true | false; без isPaid — все. */
+export async function getParticipants(type: Role, isPaid?: boolean): Promise<Participant[]> {
   const { payload } = await getData<ApplicationRow>('applications', 'getparticipants', {
+    type,
     isPaid: isPaid === undefined ? undefined : String(isPaid),
     pageSize: 1000,
   });
-  const all = payload.map(toParticipant);
-  return role ? all.filter((p) => p.role === role) : all;
+  return payload.map(toParticipant);
 }
