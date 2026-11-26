@@ -6,6 +6,7 @@ import AdminPage, { AdminEmpty, AdminError } from '../admin-page';
 import Contacts from '../contacts';
 import CopyButton from '../copy-button';
 import { ADMIN_NAV } from '../nav';
+import EditRequest from '../edit-request';
 import RemovableRow from '../removable-row';
 import { LiveCount, RemovalProvider } from '../removal';
 import PaidFilter, { PaidBadge, paidToBool, parsePaid } from '../paid-filter';
@@ -87,8 +88,8 @@ export default async function Page({ searchParams }: Props) {
                     </>
                   );
                   return a.isPaid
-                    ? <tr key={a.id} className="is-paid">{cells}<td /></tr>
-                    : <RemovableRow key={a.id} id={a.id} className="is-unpaid">{cells}</RemovableRow>;
+                    ? <tr key={a.id} className="is-paid">{cells}<td className="r"><EditRequest p={a} /></td></tr>
+                    : <RemovableRow key={a.id} id={a.id} className="is-unpaid" extra={<EditRequest p={a} />}>{cells}</RemovableRow>;
                 })}
               </tbody>
             </table>

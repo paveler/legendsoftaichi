@@ -3,6 +3,7 @@ import { rub } from '@/lib/registration';
 import Contacts from '../contacts';
 import AdminPage, { AdminEmpty, AdminError } from '../admin-page';
 import { ADMIN_NAV } from '../nav';
+import EditRequest from '../edit-request';
 import RemovableRow from '../removable-row';
 import { LiveCount, RemovalProvider } from '../removal';
 import PaidFilter, { PaidBadge, paidToBool, parsePaid } from '../paid-filter';
@@ -53,8 +54,8 @@ export default async function Page({ searchParams }: Props) {
                     </>
                   );
                   return s.isPaid
-                    ? <tr key={s.id} className="is-paid">{cells}<td /></tr>
-                    : <RemovableRow key={s.id} id={s.id} className="is-unpaid">{cells}</RemovableRow>;
+                    ? <tr key={s.id} className="is-paid">{cells}<td className="r"><EditRequest p={s} /></td></tr>
+                    : <RemovableRow key={s.id} id={s.id} className="is-unpaid" extra={<EditRequest p={s} />}>{cells}</RemovableRow>;
                 })}
               </tbody>
             </table>

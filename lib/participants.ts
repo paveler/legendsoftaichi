@@ -1,5 +1,5 @@
 import 'server-only';
-import { getData } from './directual-api';
+import { getData, postData } from './directual-api';
 import type { Registration, Role } from './registration';
 
 /** Строка структуры applications, как её отдаёт эндпоинт getparticipants */
@@ -18,6 +18,8 @@ export interface Participant extends Omit<Registration, 'amount'> {
   orderNum: string;
   sum: number;
   isPaid: boolean;
+  /** Заявка как есть (распарсенный data) — основа для правки, чтобы не потерять незнакомые поля */
+  raw: Record<string, unknown>;
 }
 
 function toParticipant(row: ApplicationRow): Participant {
@@ -34,6 +36,7 @@ function toParticipant(row: ApplicationRow): Participant {
     orderNum: row.order_num ?? '',
     sum: Number(row.sum) || 0,
     isPaid: row.isPaid === true || row.isPaid === 'true',
+    raw: reg as Record<string, unknown>,
   };
 }
 
@@ -46,4 +49,9 @@ export async function getParticipants(type: Role, isPaid?: boolean): Promise<Par
     pageSize: 1000,
   });
   return payload.map(toParticipant);
+}
+
+/** Перезаписать JSON заявки: POST в тот же getparticipants, на запись открыты только id и data */
+export async function saveParticipantData(id: string, data: Record<string, unknown>): Promise<void> {
+  await postData('applications', 'getparticipants', { id, data: JSON.stringify(data) });
 }

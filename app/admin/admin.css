@@ -278,3 +278,54 @@
 .adm-send:hover { background: #fff; border-color: var(--ink-soft); }
 .adm-send:disabled { opacity: .6; cursor: wait; }
 .adm-ok { color: #2f7a46; }
+
+/* --- правка заявки --- */
+.adm-seg button {
+  padding: 7px 14px; border-radius: 7px; border: 0; background: none; cursor: pointer;
+  color: var(--ink-soft); font: 500 14px var(--sans); white-space: nowrap;
+  transition: background .15s, color .15s;
+}
+.adm-seg button:hover { color: var(--ink); }
+.adm-seg button.active { background: var(--ink); color: #fff; }
+
+.adm-modal {
+  width: min(100% - 32px, 640px); max-height: calc(100svh - 48px);
+  padding: 0; border: 1px solid var(--adm-line); border-radius: 18px;
+  background: #fff; color: var(--ink);
+  box-shadow: 0 30px 80px -30px rgba(60, 10, 14, .45);
+}
+.adm-modal::backdrop { background: rgba(40, 20, 22, .35); }
+.adm-modal form { display: grid; gap: 20px; padding: 24px; }
+.adm-modal header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.adm-modal h2 { margin: 0; font-size: 22px; }
+.adm-modal h2 small { display: block; margin-top: 2px; font-size: 13px; font-weight: 400; color: var(--ink-soft); }
+.adm-modal header .adm-cancel { font-size: 18px; line-height: 1; }
+.adm-modal fieldset { margin: 0; padding: 0; border: 0; display: grid; gap: 10px; }
+.adm-modal legend {
+  margin-bottom: 10px; padding: 0;
+  font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft);
+}
+.adm-modal input {
+  width: 100%; min-width: 0;
+  font: 400 15px/1.4 var(--sans); color: var(--ink);
+  background: #fff; border: 1px solid var(--adm-line); border-radius: 10px;
+  padding: 9px 12px; outline: none; transition: border-color .15s;
+}
+.adm-modal input:focus { border-color: var(--ink); }
+.adm-modal input.invalid { border-color: var(--red); background: #fff7f7; }
+.adm-modal .muted { color: #c5b8b8; font-variant-numeric: tabular-nums; }
+.adm-modal .adm-fail { margin: 0; font-size: 13px; }
+.adm-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.adm-fields label { display: grid; gap: 4px; }
+.adm-fields label.wide { grid-column: 1 / -1; }
+.adm-fields span { font-size: 13px; color: var(--ink-soft); }
+.adm-form-row { display: flex; gap: 8px; align-items: center; }
+.adm-form-row .adm-seg { flex: none; }
+.adm-member-row { display: grid; grid-template-columns: 20px 1fr 96px; gap: 8px; align-items: center; }
+.adm-modal footer { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.adm-modal footer .adm-fail { margin-right: auto; }
+.adm-btn:disabled { opacity: .6; cursor: wait; }
+@media (max-width: 560px) {
+  .adm-fields { grid-template-columns: 1fr; }
+  .adm-form-row { flex-direction: column; align-items: stretch; }
+}

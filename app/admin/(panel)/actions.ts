@@ -1,7 +1,10 @@
 'use server';
 
 import { getAdmin } from '@/lib/admin-session';
+import { revalidatePath } from 'next/cache';
 import { postData } from '@/lib/directual-api';
+import { parseRequestEdit } from '@/lib/participant-edit';
+import { saveParticipantData } from '@/lib/participants';
 
 // POST-эндпоинт структуры actions в Directual: { action, payload } → сценарий на стороне Directual
 const ACTIONS_ENDPOINT = 'post';
@@ -29,6 +32,26 @@ export async function sendPaymentLink(id: string): Promise<{ ok: boolean }> {
     return { ok: true };
   } catch (e) {
     console.error('[admin/sendPaymentLink]', e);
+    return { ok: false };
+  }
+}
+
+/** Поправить данные заявки (имя, контакты, формы, состав группы). raw — заявка как она пришла в админку:
+ *  правка накладывается поверх, роль и сумма не меняются */
+export async function updateRequest(
+  id: string,
+  raw: Record<string, unknown>,
+  edit: unknown,
+): Promise<{ ok: true } | { ok: false; errors?: string[] }> {
+  if (!(await getAdmin())) return { ok: false };
+  const parsed = parseRequestEdit(raw, edit);
+  if (!parsed.ok) return parsed;
+  try {
+    await saveParticipantData(id, { ...raw, ...parsed.data });
+    revalidatePath('/admin', 'layout');
+    return { ok: true };
+  } catch (e) {
+    console.error('[admin/updateRequest]', e);
     return { ok: false };
   }
 }

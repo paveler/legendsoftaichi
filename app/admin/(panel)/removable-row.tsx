@@ -7,9 +7,11 @@ import { useRemoval } from './removal';
 // Строка неоплаченной заявки: «Выслать ссылку на оплату» (сразу, без подтверждения — повторная отправка безвредна)
 // и «Удалить заявку»: подтверждение прямо в строке, потом строка сразу пропадает (оптимистично).
 // Если Directual ответил ошибкой — строка возвращается с пометкой. Перезапроса списка нет
-export default function RemovableRow({ id, className, children }: {
+export default function RemovableRow({ id, className, extra, children }: {
   id: string;
   className?: string;
+  /** Кнопки перед «Выслать ссылку» — например «Изменить» */
+  extra?: React.ReactNode;
   children: React.ReactNode;
 }) {
   const { removed, setRemoved } = useRemoval();
@@ -45,6 +47,7 @@ export default function RemovableRow({ id, className, children }: {
           </div>
         ) : (
           <div className="adm-confirm">
+            {extra}
             {link === 'sent' ? (
               <span className="adm-ok">Ссылка отправлена ✓</span>
             ) : (

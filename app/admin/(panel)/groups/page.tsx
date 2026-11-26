@@ -4,6 +4,7 @@ import { plural } from '@/lib/plural';
 import AdminPage, { AdminEmpty, AdminError } from '../admin-page';
 import Contacts from '../contacts';
 import { ADMIN_NAV } from '../nav';
+import EditRequest from '../edit-request';
 import RemovableRow from '../removable-row';
 import { LiveCount, RemovalProvider } from '../removal';
 import PaidFilter, { PaidBadge, paidToBool, parsePaid } from '../paid-filter';
@@ -78,8 +79,8 @@ export default async function Page({ searchParams }: Props) {
                     </>
                   );
                   return g.isPaid
-                    ? <tr key={g.id} className="is-paid">{cells}<td /></tr>
-                    : <RemovableRow key={g.id} id={g.id} className="is-unpaid">{cells}</RemovableRow>;
+                    ? <tr key={g.id} className="is-paid">{cells}<td className="r"><EditRequest p={g} /></td></tr>
+                    : <RemovableRow key={g.id} id={g.id} className="is-unpaid" extra={<EditRequest p={g} />}>{cells}</RemovableRow>;
                 })}
               </tbody>
             </table>
